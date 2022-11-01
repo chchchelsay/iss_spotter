@@ -1,6 +1,9 @@
-// index.js
-
 const { nextISSTimesForMyLocation } = require('./iss');
+
+//PRINTPASSTIMES 
+//takes in array of objects of next few flyovers of the ISS
+//returns undefined but console.logs message
+// eg Next pass at Mon Jun 10 2019 20:11:44 GMT-0700 (Pacific Daylight Time) for 468 seconds!
 
 const printPassTimes = function(passTimes) {
   for (const pass of passTimes) {
@@ -11,6 +14,7 @@ const printPassTimes = function(passTimes) {
   }
 };
 
+//tests for error handling
 nextISSTimesForMyLocation((error, passTimes) => {
   if (error) {
     return console.log("It didn't work!", error);

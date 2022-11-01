@@ -1,5 +1,10 @@
 const request = require('request');
 
+//big picture function using fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes
+//multiple API requests
+//takes in callback with error or results
+//returns a callback (with error if any, fly-over times as an array)
+// eg [ { risetime: <number>, duration: <number> }, ... ]
 const nextISSTimesForMyLocation = function(callback) {
   fetchMyIP((error, ip) => {
     if (error) {
@@ -22,7 +27,10 @@ const nextISSTimesForMyLocation = function(callback) {
   });
 };
 
-
+//FETCHMYIP makes a single API request to find the user's I[ address
+//takes in a callback (if error)
+//returns a callback (with error if any, and IP address in string format)
+//eg. "ip":"24.37.137.170"
 const fetchMyIP = function(callback) {
   request('https://api.ipify.org?format=json', (error, response, body) => {
     if (error) return callback(error, null);
@@ -37,6 +45,10 @@ const fetchMyIP = function(callback) {
   });
 };
 
+//FETCHCOORDSBYIP makes a single API request to find the user's lat/long coordinates with a given IP address
+//takes in a callback (if error) and the IP string
+//returns a callback (with error if any, lat/long in an object)
+// eg { latitude: '49.27670', longitude: '-123.13000' }
 const fetchCoordsByIP = function(ip, callback) {
   request(`http://ipwho.is/${ip}`, (error, response, body) => {
 
@@ -57,6 +69,11 @@ const fetchCoordsByIP = function(ip, callback) {
     callback(null, {latitude, longitude});
   });
 };
+
+//FETCHISSFLYOVERTIMES makes a single API request to find upcoming ISS flyover times given lat/long coords
+//takes in a callback (if error) and an object with lat/lng keys
+//returns a callback (with error if any, flyover times as an array of objects)
+// eg [ { risetime: 134564234, duration: 600 }, ... ]
 const fetchISSFlyOverTimes = function(coords, callback) {
   const url = `https://iss-pass.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`;
 
@@ -76,4 +93,5 @@ const fetchISSFlyOverTimes = function(coords, callback) {
   });
 };
 
+//exports main function nextISSTimesForMyLocation to index.js
 module.exports = { nextISSTimesForMyLocation };
